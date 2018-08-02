@@ -17,16 +17,14 @@ import java.util.Date;
 public class EOSUtilTest {
 
     final static String walletName = "cooljsz32223";
-    static String walletPWDKey = "PW5JvCL45D8WnNVEuB71iaSanLUa9A1WAh116oP7Lt2QJ588u5R1V";
-    static String walletPubKey = "EOS83bJ7BwAvLU2njwkWr38xfY4CKSqeQapKanTVgKcMnNiR6a1Kf";
-
     //生成的账户用密钥对
     final static String accountPWDKey = "5Jbou6fLHESG84rGFpKD7hbz8Ze4DqTgdK1E4Rz8xkKitnfgf13";
     final static String accountPubKey = "EOS7sAqdTaFxxMjsXyqqBfsBKMWcKZh7jCWbSTxVTqXMGfTg5bwXK";
-
     //测试链eosio密钥对
     final static String eosioPWDKey = "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3";
     final static String eosioPubKey = "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV";
+    static String walletPWDKey = "PW5JvCL45D8WnNVEuB71iaSanLUa9A1WAh116oP7Lt2QJ588u5R1V";
+    static String walletPubKey = "EOS83bJ7BwAvLU2njwkWr38xfY4CKSqeQapKanTVgKcMnNiR6a1Kf";
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -75,13 +73,14 @@ public class EOSUtilTest {
 
     @Test
     public void a5_createAccountTest() {
+        //测试链创建账号时需要将eosio的秘钥导入到钱包当中,否则会出现390003错误,创建账号时注意使用的公钥需要时eosio的
         EOSUtil eosUtil = new EOSUtil();
         String accountCreator = "eosio";
         String accountName = "cooljsz12345";
 
         //创建账号
         String binargs = eosUtil.sc_newaccoount(accountCreator, accountName, accountPubKey);
-        System.out.println("New account creator:"+accountCreator+"   new account name:"+accountName+"   account public key:" + accountPubKey);
+        System.out.println("New account creator:" + accountCreator + "   new account name:" + accountName + "   account public key:" + accountPubKey);
 
         //获得链信息
         JSONObject chainInfoJson = eosUtil.getChainInfo();
@@ -92,7 +91,7 @@ public class EOSUtilTest {
 
         //获得最新的块信息
         JSONObject blockInfoJson = eosUtil.getBlock(head_block_num);
-        System.out.println("block info:"+blockInfoJson);
+        System.out.println("block info:" + blockInfoJson);
         //生成块的时间往后延迟1分钟
         String timestamp = blockInfoJson.get("timestamp").toString();
         System.out.println("timestamp:" + timestamp);
@@ -117,7 +116,7 @@ public class EOSUtilTest {
         boolean isUnlock = eosUtil.unlockWallet(walletName, walletPWDKey);
 
         //查看签名所需使用的PublicKey
-        JSONObject requiredKeys = eosUtil.getRequiredKeys(head_block_num, ref_block_prefix, expiration, accountCreator, accountName, binargs, new String[]{walletPubKey, accountPubKey,eosioPubKey});
+        JSONObject requiredKeys = eosUtil.getRequiredKeys(head_block_num, ref_block_prefix, expiration, accountCreator, accountName, binargs, new String[]{walletPubKey, accountPubKey, eosioPubKey});
 //        String pubKey = ((String[]) requiredKeys.get("required_keys"))[0];
 
         //对交易签名
