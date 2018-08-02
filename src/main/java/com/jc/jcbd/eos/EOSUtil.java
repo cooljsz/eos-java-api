@@ -9,7 +9,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -86,7 +85,6 @@ public class EOSUtil {
     //根据钱包的秘钥生成公钥
     public String createPublicKey(String walletName, String walletPWD) {
         System.out.println("createAccountKey:" + walletName);
-        unlockWallet(walletName, walletPWD);
         String url = "http://" + IP + ":8888/v1/wallet/create_key";
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader("Content-Type", "text/plain; charset=UTF-8");
@@ -118,7 +116,7 @@ public class EOSUtil {
         System.out.println("Create Account creator:" + creator);
         System.out.println("Create Account accountName:" + accountName);
         System.out.println("Create Account publicKey:" + publicKey);
-//        unlockWallet(walletName,walletPWD);
+
         String url = "http://" + IP + ":8888/v1/chain/abi_json_to_bin";
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader("Content-Type", "application/json; charset=UTF-8");
@@ -231,20 +229,15 @@ public class EOSUtil {
     }
 
     //查看所需公钥
-    public JSONObject getRequiredKeys(long ref_block_num, long ref_block_prefix, String expiration, String creator, String accountName, String binargs, String[] publicKeys)
-    {
+    public JSONObject getRequiredKeys(long ref_block_num, long ref_block_prefix, String expiration, String creator, String accountName, String binargs, String[] publicKeys) {
         System.out.println("getRequiredKeys ref_block_num:" + ref_block_num);
         System.out.println("getRequiredKeys ref_block_prefix:" + ref_block_prefix);
         System.out.println("getRequiredKeys expiration:" + expiration);
         System.out.println("getRequiredKeys creator:" + creator);
         System.out.println("getRequiredKeys accountName:" + accountName);
         System.out.println("getRequiredKeys binargs:" + binargs);
-        System.out.println("getRequiredKeys publicKey:" + Arrays.toString( publicKeys));
+        System.out.println("getRequiredKeys publicKey:" + Arrays.toString(publicKeys));
 
-//        for (int i = 0; i <  publicKeys.length; i++) {
-//            publicKeys[i] = "\""+publicKeys[i]+"\"";
-//        }
-//        unlockWallet(walletName,walletPWD);
         String url = "http://" + IP + ":8888/v1/chain/get_required_keys";
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader("Content-Type", "application/json; charset=UTF-8");
@@ -272,7 +265,7 @@ public class EOSUtil {
         transctionJson.put("signatures", new String[0]);
 
         JSONObject paraJson = new JSONObject();
-        paraJson.put("available_keys",publicKeys);
+        paraJson.put("available_keys", publicKeys);
         paraJson.put("transaction", transctionJson);
 
         String jsonStr = paraJson.toString();
@@ -288,8 +281,8 @@ public class EOSUtil {
             } else {
                 String transaction = EntityUtils.toString(httpResponse.getEntity());
                 JSONObject resultJson = new JSONObject(transaction);
-                String transaction_id = resultJson.get("transaction_id").toString();
-                System.out.println("transaction:" + transaction_id);
+                String required_keys = resultJson.get("required_keys").toString();
+                System.out.println("required_keys:" + required_keys);
                 return resultJson;
             }
         } catch (ClientProtocolException e) {
@@ -302,7 +295,7 @@ public class EOSUtil {
 
 
     //签名新建账号的交易
-    public JSONObject sc_signTransaction(long ref_block_num, long ref_block_prefix, String expiration, String creator, String accountName, String binargs, String creatorPublicKey,String chainID) {
+    public JSONObject sc_signTransaction(long ref_block_num, long ref_block_prefix, String expiration, String creator, String accountName, String binargs, String creatorPublicKey, String chainID) {
         System.out.println("Sign Transaction ref_block_num:" + ref_block_num);
         System.out.println("Sign Transaction ref_block_prefix:" + ref_block_prefix);
         System.out.println("Sign Transaction expiration:" + expiration);
@@ -310,7 +303,7 @@ public class EOSUtil {
         System.out.println("Sign Transaction accountName:" + accountName);
         System.out.println("Sign Transaction binargs:" + binargs);
         System.out.println("Sign Transaction creatorPublicKey:" + creatorPublicKey);
-//        unlockWallet(walletName,walletPWD);
+
         String url = "http://" + IP + ":8888/v1/wallet/sign_transaction";
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader("Content-Type", "application/json; charset=UTF-8");
@@ -335,7 +328,7 @@ public class EOSUtil {
         String[] pubKeyJson = new String[3];
         pubKeyJson[0] = paraJson.toString();
         pubKeyJson[1] = Arrays.toString(new String[]{"\"" + creatorPublicKey + "\""});
-        pubKeyJson[2] = "\""+chainID+"\"";
+        pubKeyJson[2] = "\"" + chainID + "\"";
 
 
         String jsonStr = Arrays.toString(pubKeyJson);
@@ -371,7 +364,7 @@ public class EOSUtil {
         System.out.println("Push Transaction accountName:" + accountName);
         System.out.println("Push Transaction binargs:" + binargs);
         System.out.println("Push Transaction signatures:" + signatures);
-//        unlockWallet(walletName,walletPWD);
+
         String url = "http://" + IP + ":8888/v1/chain/push_transaction";
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader("Content-Type", "application/json; charset=UTF-8");
@@ -405,7 +398,7 @@ public class EOSUtil {
         try {
             httpResponse = httpClient.execute(httpPost);
             int statusCode = httpResponse.getStatusLine().getStatusCode();
-            if (statusCode != HttpStatus.SC_CREATED) {
+            if (statusCode != HttpStatus.SC_ACCEPTED) {
                 System.err.println("push Transaction Method failed:" + httpResponse.getStatusLine());
             } else {
                 String transaction = EntityUtils.toString(httpResponse.getEntity());
@@ -424,14 +417,13 @@ public class EOSUtil {
 
 
     //列出所有的key对
-    public String listWalletKeys(String walletName,String walletPSW)
-    {
+    public String listWalletKeys(String walletName, String walletPSW) {
         String url = "http://" + IP + ":8888/v1/wallet/list_keys";
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader("Content-Type", "application/json; charset=UTF-8");
         JSONObject walletInfo = new JSONObject();
-        walletInfo.put(walletName,walletPSW);
-        String jsonStr = Arrays.toString(new String[]{"\""+ walletName+"\"","\""+walletPSW+"\""});
+        walletInfo.put(walletName, walletPSW);
+        String jsonStr = Arrays.toString(new String[]{"\"" + walletName + "\"", "\"" + walletPSW + "\""});
         System.out.println(jsonStr);
         httpPost.setEntity(new StringEntity(jsonStr, Charset.forName("UTF-8")));
         HttpClient httpClient = HttpClients.createDefault();
@@ -455,12 +447,11 @@ public class EOSUtil {
     }
 
     //导入私钥
-    public void walletImportKey(String walletName,String privateKey)
-    {
+    public void walletImportKey(String walletName, String privateKey) {
         String url = "http://" + IP + ":8888/v1/wallet/import_key";
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader("Content-Type", "text/plain; charset=UTF-8");
-        String jsonStr = Arrays.toString(new String[]{"\""+ walletName+"\"","\""+ privateKey+"\""});
+        String jsonStr = Arrays.toString(new String[]{"\"" + walletName + "\"", "\"" + privateKey + "\""});
         httpPost.setEntity(new StringEntity(jsonStr, Charset.forName("UTF-8")));
         System.out.println(jsonStr);
         HttpClient httpClient = HttpClients.createDefault();
