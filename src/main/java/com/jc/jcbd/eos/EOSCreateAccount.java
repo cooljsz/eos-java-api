@@ -230,7 +230,7 @@ public class EOSCreateAccount {
     }
 
     //查看所需公钥
-    public JSONArray getRequiredKeys(long ref_block_num, long ref_block_prefix, String expiration, String creator, String actionName,String accountName, String binargs, String[] publicKeys) {
+    public JSONArray getRequiredKeys(long ref_block_num, long ref_block_prefix, String expiration, String creator, String actionName, String accountName, String binargs, String[] publicKeys) {
         System.out.println("getRequiredKeys ref_block_num:" + ref_block_num);
         System.out.println("getRequiredKeys ref_block_prefix:" + ref_block_prefix);
         System.out.println("getRequiredKeys expiration:" + expiration);
@@ -297,7 +297,7 @@ public class EOSCreateAccount {
 
 
     //签名新建账号的交易
-    public JSONObject sc_signTransaction(long ref_block_num, long ref_block_prefix, String expiration, String creator,String actionName, String accountName, String binargs, String creatorPublicKey, String chainID) {
+    public JSONObject sc_signTransaction(long ref_block_num, long ref_block_prefix, String expiration, String creator, String actionName, String accountName, String binargs, String creatorPublicKey, String chainID) {
         System.out.println("Sign Transaction ref_block_num:" + ref_block_num);
         System.out.println("Sign Transaction ref_block_prefix:" + ref_block_prefix);
         System.out.println("Sign Transaction expiration:" + expiration);
@@ -358,7 +358,7 @@ public class EOSCreateAccount {
     }
 
     //签名新建账号的交易
-    public JSONObject sc_pushTransaction(long ref_block_num, long ref_block_prefix, String expiration, String creator,String actionName, String accountName, String binargs, String signatures) {
+    public JSONObject sc_pushTransaction(long ref_block_num, long ref_block_prefix, String expiration, String creator, String actionName, String accountName, String binargs, String signatures) {
         System.out.println("Push Transaction ref_block_num:" + ref_block_num);
         System.out.println("Push Transaction ref_block_prefix:" + ref_block_prefix);
         System.out.println("Push Transaction expiration:" + expiration);
