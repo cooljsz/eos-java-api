@@ -8,6 +8,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 
 
-public class EOSUtil {
+public class EOSCreateAccount {
 
     final static String IP = "192.168.12.132";
     final static String account1 = "user1";
@@ -27,7 +28,7 @@ public class EOSUtil {
         String url = "http://" + IP + ":8888/v1/wallet/create";
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader("Content-Type", "text/plain; charset=UTF-8");
-//        httpPost.setHeader("Accept", "text/plain");
+
         httpPost.setEntity(new StringEntity("\"" + walletName + "\"", Charset.forName("UTF-8")));
         HttpClient httpClient = HttpClients.createDefault();
         HttpResponse httpResponse = null;
@@ -229,7 +230,7 @@ public class EOSUtil {
     }
 
     //查看所需公钥
-    public JSONObject getRequiredKeys(long ref_block_num, long ref_block_prefix, String expiration, String creator, String accountName, String binargs, String[] publicKeys) {
+    public JSONArray getRequiredKeys(long ref_block_num, long ref_block_prefix, String expiration, String creator, String actionName,String accountName, String binargs, String[] publicKeys) {
         System.out.println("getRequiredKeys ref_block_num:" + ref_block_num);
         System.out.println("getRequiredKeys ref_block_prefix:" + ref_block_prefix);
         System.out.println("getRequiredKeys expiration:" + expiration);
@@ -248,7 +249,7 @@ public class EOSUtil {
 
         JSONObject actionsJson = new JSONObject();
         actionsJson.put("account", creator);
-        actionsJson.put("name", "newaccount");
+        actionsJson.put("name", actionName);
         actionsJson.put("authorization", new JSONObject[]{authorizationJson});
         actionsJson.put("data", binargs);
 
@@ -282,8 +283,9 @@ public class EOSUtil {
                 String transaction = EntityUtils.toString(httpResponse.getEntity());
                 JSONObject resultJson = new JSONObject(transaction);
                 String required_keys = resultJson.get("required_keys").toString();
+                JSONArray jsonArray = new JSONArray(required_keys);
                 System.out.println("required_keys:" + required_keys);
-                return resultJson;
+                return jsonArray;
             }
         } catch (ClientProtocolException e) {
             System.out.println("http请求失败，uri{" + url + "},exception:" + e);
@@ -295,7 +297,7 @@ public class EOSUtil {
 
 
     //签名新建账号的交易
-    public JSONObject sc_signTransaction(long ref_block_num, long ref_block_prefix, String expiration, String creator, String accountName, String binargs, String creatorPublicKey, String chainID) {
+    public JSONObject sc_signTransaction(long ref_block_num, long ref_block_prefix, String expiration, String creator,String actionName, String accountName, String binargs, String creatorPublicKey, String chainID) {
         System.out.println("Sign Transaction ref_block_num:" + ref_block_num);
         System.out.println("Sign Transaction ref_block_prefix:" + ref_block_prefix);
         System.out.println("Sign Transaction expiration:" + expiration);
@@ -314,7 +316,7 @@ public class EOSUtil {
 
         JSONObject actionsJson = new JSONObject();
         actionsJson.put("account", creator);
-        actionsJson.put("name", "newaccount");
+        actionsJson.put("name", actionName);
         actionsJson.put("authorization", new JSONObject[]{authorizationJson});
         actionsJson.put("data", binargs);
 
@@ -356,7 +358,7 @@ public class EOSUtil {
     }
 
     //签名新建账号的交易
-    public JSONObject sc_pushTransaction(long ref_block_num, long ref_block_prefix, String expiration, String creator, String accountName, String binargs, String signatures) {
+    public JSONObject sc_pushTransaction(long ref_block_num, long ref_block_prefix, String expiration, String creator,String actionName, String accountName, String binargs, String signatures) {
         System.out.println("Push Transaction ref_block_num:" + ref_block_num);
         System.out.println("Push Transaction ref_block_prefix:" + ref_block_prefix);
         System.out.println("Push Transaction expiration:" + expiration);
@@ -375,7 +377,7 @@ public class EOSUtil {
 
         JSONObject actionsJson = new JSONObject();
         actionsJson.put("account", creator);
-        actionsJson.put("name", "newaccount");
+        actionsJson.put("name", actionName);
         actionsJson.put("authorization", new JSONObject[]{authorizationJson});
         actionsJson.put("data", binargs);
 
