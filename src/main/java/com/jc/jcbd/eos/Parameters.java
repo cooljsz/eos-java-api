@@ -9,8 +9,8 @@ public class Parameters {
     final static String EOSIO_PWD_KEY = "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3";
     final static String EOSIO_PUB_KEY = "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV";
     //生成的钱包账号
-    static String WALLET_PWD_KEY = "PW5JNp2tBcZ4Xz7A3LJWw8KE1AhtEg6qadGn1yjKbtoqbsV5tnqpv";
-    static String WALLET_PUB_KEY = "EOS7nFqgT5e76eSNZ7dVnNp1jX3A6CUCpJLadovrd21T2Qui86pzw";
+    static String WALLET_PWD_KEY = "PW5HuUhRD2krxAU8JKY3dbLBkGUdVXvDNEPoKBNsH7bsLpCWsXheX";
+    static String WALLET_PUB_KEY = "EOS5b4syTRzquv9QNuqSdrqTzmpE3gYosR19VTwiXUfxYrQvMrUeR";
 
     static String accountCreator = "eosio";
     static String accountName = "contractuser";

@@ -139,7 +139,7 @@ public class EOSTransfer {
         System.out.println(transactionJson);
         System.out.println(transaction_id);
 
-        return null;
+        return transaction_id;
     }
 
     //根据transaction_id获取blockid

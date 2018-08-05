@@ -83,8 +83,17 @@ public class EOSTransferTest {
     }
 
     @Test
+    public void simpleTransferTest()
+    {
+        EOSTransfer eosTransfer = new EOSTransfer();
+        String transactionID = eosTransfer.transfer(Parameters.accountName,Parameters.accountCreator,"测试字符");
+        System.out.println(transactionID);
+    }
+
+    @Test
     public void getMemoTest() {
         EOSTransfer eosTransfer = new EOSTransfer();
-        String blockInfo = eosTransfer.getMemo("7f83b6f4c27548a6195076f39d6eb058af5b2fd16f78cf33ac2374a1c3b23a00");
+        String memo = eosTransfer.getMemo("153bc65d04564eb4159cfa772a823824cf3c498f12093e213331b96428b4199f");
+        System.out.println(memo);
     }
 }
